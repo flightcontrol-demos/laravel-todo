@@ -1,0 +1,50 @@
+{
+    "$schema": "https://app.flightcontrol.dev/schema.json",
+    "environments": [
+      {
+        "id": "laravel-web",
+        "name": "Laravel Demo",
+        "region": "us-west-1",
+        "source": {
+            "branch": "main"
+        },
+        "services": [
+          {
+            "id": "laravel-web",
+            "name": "Laravel Web",
+            "buildType": "nixpacks",
+            "installCommand": "npm install && composer install && php artisan migrate --force",
+            "startCommand": "php artisan serve --host=0.0.0.0 ",
+            "cpu": 0.5,
+            "memory": 1,
+            "minInstances": 1,
+            "maxInstances": 1,
+            "type": "fargate",
+            "healthCheckPath": "/",
+            "port": 8000,
+            "envVariables": {
+                "APP_DEBUG": false,
+                "APP_ENV": "production",
+                "APP_KEY": "base64:wS+k1m3T8+DexIgOnY2DFoUg9UKNVTZDrNrJlpJDdqQ=","DATABASE_URL": {
+                    "fromService": {
+                      "id": "db",
+                      "value": "dbConnectionString"
+                    }
+                }
+
+            }
+          },
+          {
+            "id": "db",
+            "name": "Database",
+            "type": "rds",
+            "engine": "mysql",
+            "engineVersion": "8.0",
+            "instanceSize": "db.t4g.micro",
+            "storage": 20,
+            "private": false
+          }
+        ]
+      }
+    ]
+  }
